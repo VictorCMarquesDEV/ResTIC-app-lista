@@ -1,15 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { Task } from './src/components/Task';
+import { CardNumber } from './src/components/CardNumber';
+import { InputAddTask } from './src/components/InputAddTask';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Task/>
-      <Task/>
-      <Task/>
-      <Task/>
-      <Task/>
+      <InputAddTask/>
+      <View style={{ flexDirection: 'row', gap: 16 }}>
+        <CardNumber />
+        <CardNumber />
+        <CardNumber />
+      </View>
+      <Task />
+      <Task />
+      <Task />
+      <Task />
+      <Task />
       <StatusBar style="auto" />
     </View>
   );
