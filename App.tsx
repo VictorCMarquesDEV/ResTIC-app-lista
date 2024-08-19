@@ -55,9 +55,9 @@ export default function App() {
         <CardNumber />
         <CardNumber />
       </View>
-      
+
       <View style={styles.tasks}>
-        <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: 500, marginBottom: 16}}>Lista de Tarefas: </Text>
+        <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: 500, marginBottom: 16 }}>Lista de Tarefas: </Text>
 
         <FlatList
           data={tasks}
@@ -74,8 +74,8 @@ export default function App() {
             </View>
           )}
         />
-        </View>
       </View>
+    </View>
 
   );
 }
