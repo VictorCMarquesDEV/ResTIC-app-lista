@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Task } from './src/components/Task';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Olá, Mundo!</Text>
+      <Task/>
+      <Task/>
+      <Task/>
+      <Task/>
       <Task/>
       <StatusBar style="auto" />
     </View>
@@ -15,8 +18,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#28385E',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 16,
+    gap: 16,
   },
 });
