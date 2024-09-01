@@ -6,7 +6,7 @@ export const Container = styled.View`
     flex-direction: column;
     align-items: center;
     background-color: #fff;
-    border-radious: 4px;
+    border-radius: 4px;
     overflow: hidden;
     gap: 8px;
 `
