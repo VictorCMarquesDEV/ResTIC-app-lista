@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { FlatList, StyleSheet, View, Text, Alert, ScrollView } from 'react-native';
 import { Task } from './src/components/Task';
 import { CardNumber } from './src/components/CardNumber';
 import { InputAddTask } from './src/components/InputAddTask';
 import { useEffect, useState } from 'react';
-import { Feather } from '@expo/vector-icons';
+
 
 //app-lista: Aplicativo de Lista de Tarefas
 
@@ -13,6 +13,8 @@ export default function App() {
   const [tasks, setTasks] = useState<{ description: string; check: boolean }[]>([]);
   const [taskText, setTaskText] = useState("");
   const [countTask, setCountTask] = useState(0);
+  const [countInProgress, setCountInProgress] = useState(0);
+  const [countCompleted, setCountCompleted] = useState(0);
 
   function handleTaskAdd() {
     if (taskText == "") {
@@ -25,46 +27,90 @@ export default function App() {
     const newTask = { description: taskText, check: false };
     setTasks([...tasks, newTask]);
     setTaskText('');
+    setCountInProgress(countInProgress + 1);
   }
+
+  function handleTaskChangeStatus(taskToChange: { description: string, check: boolean }) {
+    const updatedTasks = tasks.filter((task) => task !== taskToChange)
+    const newTask = {
+      description: taskToChange.description,
+      check: !taskToChange.check,
+    }
+    updatedTasks.push(newTask);
+    setTasks(updatedTasks);
+
+    if (taskToChange.check) {
+      setCountInProgress(countInProgress - 1);
+      setCountCompleted(countCompleted + 1);
+    } else {
+      setCountInProgress(countInProgress + 1);
+      setCountCompleted(countCompleted - 1);
+    }
+  }
+
+  function handleTaskDelete(taskToDelete: { description: string, check: boolean }) {
+    {/*Alert.alert(`Atenção. Deseja realmente remover a tarefa ${taskToDelete.description}?`,
+      [
+        {
+          text: { "Sim"},
+          onPress: () => {
+            const updatedTasks = tasks.filter((task) => task != taskToDelete)
+            setTasks(updatedTasks);
+          }
+        },
+        { text: { "Não"}, style: { "cancel"} },
+      ]
+    ) */}
+    const updatedTasks = tasks.filter((task) => task != taskToDelete)
+    setTasks(updatedTasks);
+
+    if (taskToDelete.check) {
+      setCountCompleted(countCompleted - 1);
+    } else {
+      setCountInProgress(countInProgress - 1);
+    }
+  };
 
   useEffect(() => {
     let totalTasks = tasks.length;
     setCountTask(totalTasks);
+
+    const inProgressTasks = tasks.filter((task) => !task.check);
+    const completedTasks = tasks.filter((task) => task.check);
+    setCountInProgress(inProgressTasks.length);
+    setCountCompleted(completedTasks.length);
+
   }, [tasks]);
 
   return (
     <View style={styles.container}>
       <StatusBar style='auto' />
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder='Digite a tarefa'
-          placeholderTextColor="white"
-          keyboardType='default'
-          onChangeText={setTaskText}
-          value={taskText}
-        />
-        <TouchableOpacity style={styles.inputButton} onPress={handleTaskAdd}>
-          <Feather name='plus-square' size={24} color='white' />
-        </TouchableOpacity>
-      </View>
+      <InputAddTask
+        onPress={handleTaskAdd}
+        onChangeText={setTaskText}
+        value={taskText}
+      />
 
       <View style={{ flexDirection: 'row', gap: 16 }}>
-        <CardNumber />
-        <CardNumber />
-        <CardNumber />
+        <CardNumber title='Tarefas' num={countTask} />
+        <CardNumber title='Andamento' num={countInProgress} />
+        <CardNumber title='Concluídas' num={countCompleted} />
       </View>
 
       <View style={styles.tasks}>
         <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: 500, marginBottom: 16 }}>Lista de Tarefas: </Text>
-
         <FlatList
           data={tasks}
           keyExtractor={(item, index) => index.toString()}
           renderItem={
             ({ item }) => (
-              <Task />
+              <Task
+                title={item.description}
+                status={item.check}
+                onCheck={() => handleTaskChangeStatus(item)}
+                onRemove={() => handleTaskDelete(item)}
+              />
             )
           }
           ListEmptyComponent={() => (
@@ -76,7 +122,6 @@ export default function App() {
         />
       </View>
     </View>
-
   );
 }
 
@@ -86,28 +131,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#28385E',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: 16,
-    paddingTop: 64,
+    padding: 20,
+    paddingTop: 50,
     gap: 16,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    borderRadius: 4,
-    backgroundColor: '#252627',
-  },
-  input: {
-    flex: 1,
-    padding: 16,
-    color: '#ffffff',
-  },
-  inputButton: {
-    backgroundColor: '#1e1e1e',
-    padding: 16,
-    borderRadius: 4,
   },
   tasks: {
     justifyContent: 'flex-start',
-    width: '100%',
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'column',
   }

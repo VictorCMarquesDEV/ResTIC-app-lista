@@ -1,10 +1,15 @@
 import { Container, CardTitle, CardValue } from './styles'
 
-export function CardNumber() {
+type Props = {
+    title: string;
+    num: number;
+}
+
+export function CardNumber({ title, num }: Props) {
     return (
         <Container>
-            <CardTitle>Tarefas:</CardTitle>
-            <CardValue>4</CardValue>
+            <CardTitle>{title}</CardTitle>
+            <CardValue>{num}</CardValue>
         </Container>
     );
 }
