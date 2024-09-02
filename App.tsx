@@ -49,18 +49,6 @@ export default function App() {
   }
 
   function handleTaskDelete(taskToDelete: { description: string, check: boolean }) {
-    {/*Alert.alert(`Atenção. Deseja realmente remover a tarefa ${taskToDelete.description}?`,
-      [
-        {
-          text: { "Sim"},
-          onPress: () => {
-            const updatedTasks = tasks.filter((task) => task != taskToDelete)
-            setTasks(updatedTasks);
-          }
-        },
-        { text: { "Não"}, style: { "cancel"} },
-      ]
-    ) */}
     const updatedTasks = tasks.filter((task) => task != taskToDelete)
     setTasks(updatedTasks);
 
