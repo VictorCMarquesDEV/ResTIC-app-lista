@@ -3,13 +3,15 @@ import { Feather } from "@expo/vector-icons"
 import { RootStackParamList } from "../../utils/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { TaskContext } from "../../context/TaskContext";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 
-export default function Details({ route }: any) {
+export default function Details() {
 
-    const { id, title, status } = route.params;
+    const {task} = useContext(TaskContext);
     const navigation = useNavigation<Props['navigation']>();
 
     return (
@@ -22,19 +24,19 @@ export default function Details({ route }: any) {
             </TopContainer>
 
             <TitleContainer>
-                <Title>{title}</Title>
+                <Title>{task.title}</Title>
             </TitleContainer>
 
             <TextStatus>Status da tarefa: </TextStatus>
 
             <StatusContainer>
                 <StatusCard>
-                    <StatusIcon style={status ? { backgroundColor: '#0E9577' } : {}}>
-                        {!status && <Feather name="square" size={24} color="white" />}
-                        {status && <Feather name="check-square" size={24} color="white" />}
+                    <StatusIcon style={task.status ? { backgroundColor: '#0E9577' } : {}}>
+                        {!task.status && <Feather name="square" size={24} color="white" />}
+                        {task.status && <Feather name="check-square" size={24} color="white" />}
                     </StatusIcon>
                     <StatusTextContainer>
-                        <TextStatus>{status ? "Realizada" : "Andamento"}</TextStatus>
+                        <TextStatus>{task.status ? "Realizada" : "Andamento"}</TextStatus>
                     </StatusTextContainer>
                 </StatusCard>
 
