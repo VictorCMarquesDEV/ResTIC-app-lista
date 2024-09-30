@@ -5,6 +5,8 @@ import { InputAddTask } from '../../../src/components/InputAddTask';
 import { useContext, useEffect, useState } from 'react';
 import { TaskContext } from '../../context/TaskContext';
 import { TaskProps } from '../../utils/types';
+import { Formik } from 'formik';
+import * as Yup from 'yup'
 
 
 //app-lista: Aplicativo de Lista de Tarefas
@@ -12,21 +14,21 @@ import { TaskProps } from '../../utils/types';
 export default function Home() {
 
     const { tasks, createTask, setTasks } = useContext(TaskContext);
-    const [taskText, setTaskText] = useState("");
     const [countTask, setCountTask] = useState(0);
     const [countInProgress, setCountInProgress] = useState(0);
     const [countCompleted, setCountCompleted] = useState(0);
 
-    function handleTaskAdd() {
-        if (taskText == "") {
-            return Alert.alert("Texto vazio. Digite algo!");
-        }
+    const TaskSchema = Yup.object().shape({
+        taskText: Yup.string().min(3, "No mínimo, 3 caracteres!").max(50, "No máximo, 50 caracteres!").required("Tarefa não pode ser vazia!")
+    });
+
+    function handleTaskAdd(taskText: string) {
+
         if (tasks.some((task) => task.title === taskText)) {
             return Alert.alert("Essa tarefa já existe!");
         }
 
         createTask(taskText);
-        setTaskText('');
         setCountInProgress(countInProgress + 1);
     }
 
@@ -73,11 +75,32 @@ export default function Home() {
 
     return (
         <View style={styles.container}>
-            <InputAddTask
-                onPress={handleTaskAdd}
-                onChangeText={setTaskText}
-                value={taskText}
-            />
+
+            <Formik
+                initialValues={{ taskText: '' }}
+                validationSchema={TaskSchema}
+                onSubmit={(values, { resetForm }) => {
+                    handleTaskAdd(values.taskText);
+                    resetForm({ values: { taskText: '' } });
+                }}
+            >
+                {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
+                    <View>
+                        <InputAddTask
+                            onPress={handleSubmit}
+                            onChangeText={handleChange('taskText')}
+                            onBlur={handleBlur('taskText')}
+                            value={values.taskText}
+                        />
+
+                        {touched.taskText && errors.taskText && (
+                            <Text style={{ color: '#ff0000' }}>{errors.taskText}</Text>
+                        )}
+
+                    </View>
+                )}
+
+            </Formik>
 
             <View style={{ flexDirection: 'row', gap: 16 }}>
                 <CardNumber title='Tarefas' num={countTask} />

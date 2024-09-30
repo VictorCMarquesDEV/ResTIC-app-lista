@@ -4,10 +4,11 @@ import { Container, Input, InputButton } from "./styles";
 type Props = {
     onPress: () => void;
     onChangeText: (text0: string) => void;
+    onBlur: (e: any) => void;
     value: string;
 }
 
-export function InputAddTask({ onPress, onChangeText, value }: Props) {
+export function InputAddTask({ onPress, onChangeText, onBlur, value }: Props) {
     return (
         <Container>
             <Input
@@ -16,6 +17,7 @@ export function InputAddTask({ onPress, onChangeText, value }: Props) {
                 keyboardType='default'
                 value={value}
                 onChangeText={onChangeText}
+                onBlur={onBlur}
             />
             <InputButton onPress={onPress}
             >
